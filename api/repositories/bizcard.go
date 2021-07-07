@@ -1,22 +1,30 @@
 package repositories
 
 import (
-	"fmt"
-
-	"github.com/jinzhu/gorm"
+	"biz.card/models"
+	"gorm.io/gorm"
 )
 
-type BizCardRepo struct {
-	db *gorm.DB
+type BizCardModel struct {
+	DB *gorm.DB
 }
 
-func NewBizCardRepo(db *gorm.DB) *BizCardRepo {
-	return &BizCardRepo{
-		db: db,
+func NewBizCardModel(db *gorm.DB) *BizCardModel {
+	return &BizCardModel{
+		DB: db,
 	}
 }
 
-func (r *BizCardRepo) Save() error {
-	fmt.Print("Saved")
-	return nil
+func (c *BizCardModel) Save() {
+	card := &models.Bizcard{
+		FirstName:   "Alexis",
+		LastName:    "Tran",
+		Role:        "Software Engineer",
+		Company:     "thales",
+		Country:     "Singapore",
+		PhoneNumber: "88924600",
+		Website:     "www.alexis.tran",
+	}
+
+	c.DB.Create(&card)
 }

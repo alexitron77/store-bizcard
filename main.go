@@ -1,23 +1,21 @@
 package main
 
 import (
-	ct "biz.card/api/controllers"
 	"github.com/gin-gonic/gin"
 
-	rp "biz.card/api/repositories"
-	cf "biz.card/config"
+	ctrl "biz.card/api/controllers"
+	repo "biz.card/api/repositories"
+	conf "biz.card/config"
 )
 
 func main() {
 	r := gin.Default()
 
-	db := cf.ConnectDB()
+	db := conf.ConnectDB()
+	bizcardRepo := repo.NewBizCardModel(db)
+	card := ctrl.NewBizcardController(bizcardRepo)
 
-	bizcardRepo := rp.NewBizCardRepo(db)
-
-	h := ct.NewBizcardHandler(bizcardRepo)
-
-	r.GET("/health", h.SaveBizCard)
+	r.GET("/save", card.SaveBizCard)
 
 	r.Run()
 }

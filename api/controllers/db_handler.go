@@ -5,16 +5,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type DBHandler struct {
-	bizcardRepo models.BizcardRepository
+type BizcardController struct {
+	bizcardRepo models.BizcardRepo
 }
 
-func NewBizcardHandler(bizcardRepo models.BizcardRepository) *DBHandler {
-	return &DBHandler{
+func NewBizcardController(bizcardRepo models.BizcardRepo) *BizcardController {
+	return &BizcardController{
 		bizcardRepo,
 	}
 }
 
-func (r *DBHandler) SaveBizCard(c *gin.Context) {
-	r.bizcardRepo.Save()
+func (b *BizcardController) SaveBizCard(c *gin.Context) {
+	b.bizcardRepo.Save()
 }

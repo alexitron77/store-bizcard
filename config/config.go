@@ -7,8 +7,14 @@ import (
 )
 
 type config struct {
-	DBUrl      string `mapstructure:"DB_URL"`
-	DBPassword string `mapstructure:"DB_PASSWORD"`
+	Postgres db `mapstructure:"POSTGRES"`
+	Mongo    db `mapstructure:"MONGO"`
+}
+
+type db struct {
+	Url      string `mapstructure:"URL"`
+	Username string `mapstructure:"USERNAME"`
+	Password string `mapstructure:"PASSWORD"`
 }
 
 func LoadConfig(path string) *config {

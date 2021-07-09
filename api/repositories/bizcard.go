@@ -1,17 +1,22 @@
 package repositories
 
 import (
+	"context"
+	"fmt"
+
 	"biz.card/models"
-	"gorm.io/gorm"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type BizCardModel struct {
-	DB *gorm.DB
+	DB  *mongo.Client
+	Ctx context.Context
 }
 
-func NewBizCardModel(db *gorm.DB) *BizCardModel {
+func NewBizCardModel(db *mongo.Client, ctx context.Context) *BizCardModel {
 	return &BizCardModel{
-		DB: db,
+		DB:  db,
+		Ctx: ctx,
 	}
 }
 
@@ -26,5 +31,13 @@ func (c *BizCardModel) Save() {
 		Website:     "www.alexis.tran",
 	}
 
-	c.DB.Create(&card)
+	collection := c.DB.Database("bizcard").Collection("cards")
+
+	_, err := collection.InsertOne(c.Ctx, card)
+
+	if err != nil {
+		fmt.Print("save", err)
+	}
+
+	// c.DB.Create(&card)
 }

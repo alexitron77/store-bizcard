@@ -1,2 +1,10 @@
-DB_URL: localhost
-DB_PASSWORD: admin
+POSTGRES:
+  URL: localhost
+  PASSWORD: admin
+MONGO:
+  USERNAME: admin 
+  PASSWORD: admin
+  URL: bizcard
+
+
+

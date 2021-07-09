@@ -29,7 +29,7 @@ func main() {
 	bizcardRepo := repo.NewBizCardModel(db, ctx)
 	card := ctrl.NewBizcardController(bizcardRepo)
 
-	r.GET("/save", card.SaveBizCard)
+	r.POST("/create-card", card.SaveBizCard)
 
 	r.Run()
 }

@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"context"
-	"fmt"
 
 	"biz.card/models"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -20,24 +19,14 @@ func NewBizCardModel(db *mongo.Client, ctx context.Context) *BizCardModel {
 	}
 }
 
-func (c *BizCardModel) Save() {
-	card := &models.Bizcard{
-		FirstName:   "Alexis",
-		LastName:    "Tran",
-		Role:        "Software Engineer",
-		Company:     "thales",
-		Country:     "Singapore",
-		PhoneNumber: "88924600",
-		Website:     "www.alexis.tran",
-	}
-
+func (c *BizCardModel) Save(card *models.Bizcard) error {
 	collection := c.DB.Database("bizcard").Collection("cards")
-
 	_, err := collection.InsertOne(c.Ctx, card)
 
 	if err != nil {
-		fmt.Print("save", err)
+		return err
 	}
 
+	return nil
 	// c.DB.Create(&card)
 }

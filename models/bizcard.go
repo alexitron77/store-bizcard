@@ -15,5 +15,5 @@ type Bizcard struct {
 }
 
 type BizcardRepo interface {
-	Save()
+	Save(*Bizcard) error
 }

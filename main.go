@@ -30,6 +30,6 @@ func main() {
 
 	r.POST("/create-card", card.SaveBizCard)
 	r.POST("/upload-card", card.Upload)
-
+	r.GET("/ws", card.ConnWebSocket)
 	r.Run()
 }

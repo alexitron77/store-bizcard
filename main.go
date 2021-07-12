@@ -29,6 +29,7 @@ func main() {
 	card := ctrl.NewBizcardController(bizcardRepo)
 
 	r.POST("/create-card", card.SaveBizCard)
+	r.POST("/upload-card", card.Upload)
 
 	r.Run()
 }

@@ -1,9 +1,12 @@
 package controllers
 
 import (
+	"fmt"
+	"log"
 	"net/http"
 
 	"biz.card/models"
+	"biz.card/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -32,4 +35,29 @@ func (b *BizcardController) SaveBizCard(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"status": "Card successfully created"})
+}
+
+func (b *BizcardController) Upload(c *gin.Context) {
+	ocr_channel := make(chan string)
+
+	file, err := c.FormFile("myFile")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = c.SaveUploadedFile(file, "uploaded/"+file.Filename)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err != nil {
+		fmt.Print(err)
+	}
+
+	go utils.Ocr(file, ocr_channel)
+	fmt.Print(<-ocr_channel)
+
+	c.String(http.StatusOK, fmt.Sprintf("'%s' uploaded!", file.Filename))
 }

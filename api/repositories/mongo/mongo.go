@@ -6,24 +6,30 @@ import (
 	"os"
 	"time"
 
+	"biz.card/models"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
+type BizCardModel struct {
+	DB  *mongo.Client
+	Ctx context.Context
+}
+
 const (
 	conStrTemplate = "mongodb://%s:%s@localhost:27017"
 )
 
-type MongoModel struct {
+type DBConn struct {
 	Url      string
 	Username string
 	Password string
 }
 
-func (m MongoModel) ConnectDB() (*mongo.Client, context.Context) {
+func (c DBConn) ConnectDB() *BizCardModel {
 
-	connectionString := fmt.Sprintf(conStrTemplate, m.Username, m.Password)
+	connectionString := fmt.Sprintf(conStrTemplate, c.Username, c.Password)
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(connectionString))
 
@@ -39,5 +45,23 @@ func (m MongoModel) ConnectDB() (*mongo.Client, context.Context) {
 		fmt.Print(err)
 	}
 
-	return client, ctx
+	return &BizCardModel{client, ctx}
+}
+
+func NewBizCardModel(db *mongo.Client, ctx context.Context) *BizCardModel {
+	return &BizCardModel{
+		DB:  db,
+		Ctx: ctx,
+	}
+}
+
+func (c *BizCardModel) Save(card *models.Bizcard) error {
+	collection := c.DB.Database("bizcard").Collection("cards")
+	_, err := collection.InsertOne(c.Ctx, card)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

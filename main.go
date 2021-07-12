@@ -6,9 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 
 	ctrl "biz.card/api/controllers"
-	repo "biz.card/api/repositories"
+	"biz.card/api/repositories/mongo"
 	"biz.card/config"
-	"biz.card/pkg/mongo"
 )
 
 func main() {
@@ -17,16 +16,16 @@ func main() {
 	path, _ := filepath.Abs("config/env")
 	conf := config.LoadConfig(path)
 
-	mongo := &mongo.MongoModel{
+	db := &mongo.DBConn{
 		Url:      conf.Mongo.Url,
 		Username: conf.Mongo.Username,
 		Password: conf.Mongo.Password,
 	}
 
-	db, ctx := mongo.ConnectDB()
-	defer db.Disconnect(ctx)
+	conn := db.ConnectDB()
+	defer conn.DB.Disconnect(conn.Ctx)
 
-	bizcardRepo := repo.NewBizCardModel(db, ctx)
+	bizcardRepo := mongo.NewBizCardModel(conn.DB, conn.Ctx)
 	card := ctrl.NewBizcardController(bizcardRepo)
 
 	r.POST("/create-card", card.SaveBizCard)

@@ -11,6 +11,7 @@ func (b *BizcardController) SaveBizCard(c *gin.Context) {
 	var card models.Bizcard
 	if err := c.ShouldBindJSON(&card); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"errors": err.Error()})
+		b.log.Errorf(err.Error())
 		return
 	}
 
@@ -18,6 +19,7 @@ func (b *BizcardController) SaveBizCard(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"errors": err.Error()})
+		b.log.Errorf(err.Error())
 		return
 	}
 

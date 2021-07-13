@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -25,7 +24,7 @@ func (b *BizcardController) ConnWebSocket(c *gin.Context) {
 	_, msg, err := ws.ReadMessage()
 
 	if err != nil {
-		log.Fatal(err)
+		b.log.Errorf(err.Error())
 	}
 
 	fmt.Print(string(msg))

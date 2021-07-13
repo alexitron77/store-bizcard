@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"biz.card/models"
+	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -15,6 +16,7 @@ import (
 type BizCardModel struct {
 	DB  *mongo.Client
 	Ctx context.Context
+	Log *logrus.Logger
 }
 
 const (
@@ -45,11 +47,12 @@ func (c DBConn) ConnectDB() *BizCardModel {
 		fmt.Print(err)
 	}
 
-	return &BizCardModel{client, ctx}
+	return &BizCardModel{client, ctx, nil}
 }
 
-func NewBizCardModel(db *mongo.Client, ctx context.Context) *BizCardModel {
+func NewBizCardModel(db *mongo.Client, ctx context.Context, log *logrus.Logger) *BizCardModel {
 	return &BizCardModel{
+		Log: log,
 		DB:  db,
 		Ctx: ctx,
 	}

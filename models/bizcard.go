@@ -1,9 +1,7 @@
 package models
 
-import "gorm.io/gorm"
-
 type Bizcard struct {
-	gorm.Model
+	// gorm.Model
 	FirstName   string `gorm:"firstname"`
 	LastName    string `gorm:"lastname"`
 	Role        string `gorm:"role"`

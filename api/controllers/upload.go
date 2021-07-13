@@ -21,7 +21,7 @@ func (b *BizcardController) Upload(c *gin.Context) {
 	err = c.SaveUploadedFile(file, "uploaded/"+file.Filename)
 
 	if err != nil {
-		log.Fatal(err)
+		b.log.Errorf(err.Error())
 	}
 
 	c.JSON(http.StatusOK, fmt.Sprintf("'%s' uploaded!", file.Filename))

@@ -6,27 +6,14 @@ This is the backend service to store cards into a NOSQL database
 
 Run the server `go run main.go`
 
-The swagger documentation can be found under _localhost/swagger_
+The swagger documentation can be found under
 
-The endpoints available are listed below:
+- localhost:8080/swagger/index.html
 
-- url: localhost:8080/create-card
+# Swagger
 
-  - method: POST
-  - data: {
-    "FirstName": "Charles",
-    "LastName": "Lau",
-    "Role": "Waitress",
-    "Company": "Kith café",
-    "Country": "Singapore",
-    "PhoneNumber": "09893448",
-    "Website": "www.kith.org"
-    }
+To generate swagger documentation, make sure to have swaggo cli.
 
-- url: localhost:8080/ws
+`go get -u github.com/swaggo/swag/cmd/swag installed`.
 
-  - method: GET
-
-- url: localhost:8080/upload-card
-  - method: POST
-  - data: multipart/file
+Then run `swag init` to start generating the documentation. The generated files are located under /docs from the root directory.

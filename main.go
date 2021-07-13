@@ -5,13 +5,24 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	_ "biz.card/docs"
+
 	ctrl "biz.card/api/controllers"
 	"biz.card/api/repositories/mongo"
 	"biz.card/config"
 	mw "biz.card/middleware"
 	log "github.com/sirupsen/logrus"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// @title Swagger Example API
+// @version 1.0
+// @description This is a sample server celler server.
+// @termsOfService http://swagger.io/terms/
+
+// @host localhost:8080
+// @basePath /
 func main() {
 	r := gin.Default()
 	r.Use(mw.GinLogMiddleware())
@@ -37,5 +48,7 @@ func main() {
 	r.POST("/create-card", card.SaveBizCard)
 	r.POST("/upload-card", card.Upload)
 	r.GET("/ws", card.ConnWebSocket)
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	r.Run()
 }

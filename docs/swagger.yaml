@@ -1,0 +1,155 @@
+basePath: /
+definitions:
+  models.Bizcard:
+    properties:
+      company:
+        example: Thales
+        type: string
+      country:
+        example: Singapore
+        type: string
+      firstname:
+        description: gorm.Model
+        example: Alexis
+        type: string
+      lastname:
+        example: Tran
+        type: string
+      linked_in:
+        example: "null"
+        type: string
+      phone_number:
+        example: "88924600"
+        type: string
+      role:
+        example: Software engineer
+        type: string
+      website:
+        example: www.alexis.tran.com
+        type: string
+    type: object
+  models.HTTPBackendError:
+    properties:
+      code:
+        example: 500
+        type: integer
+      message:
+        example: internal server error
+        type: string
+    type: object
+  models.HTTPClientError:
+    properties:
+      code:
+        example: 400
+        type: integer
+      message:
+        example: status bad request
+        type: string
+    type: object
+  models.HTTPCreated:
+    properties:
+      code:
+        example: 201
+        type: integer
+      message:
+        example: status created
+        type: string
+    type: object
+  models.HTTPSuccess:
+    properties:
+      code:
+        example: 200
+        type: integer
+      message:
+        example: status success
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a sample server celler server.
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /create-card:
+    post:
+      consumes:
+      - application/json
+      description: This endpoint save the input into the database
+      operationId: save-card-to-database
+      parameters:
+      - description: Create bizcard
+        in: body
+        name: card
+        required: true
+        schema:
+          $ref: '#/definitions/models.Bizcard'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.HTTPCreated'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.HTTPClientError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.HTTPBackendError'
+      summary: Save card
+  /upload-card:
+    post:
+      consumes:
+      - application/json
+      description: This endpoint upload an image file into the file system of the
+        server
+      operationId: upload-file-to-server
+      parameters:
+      - description: Body with image file
+        in: formData
+        name: myFile
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.HTTPSuccess'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.HTTPClientError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.HTTPBackendError'
+      summary: Upload file
+  /ws:
+    get:
+      consumes:
+      - application/json
+      description: This endpoint establish a websocket connection with the client
+      operationId: connect-websocket
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.HTTPSuccess'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.HTTPClientError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.HTTPBackendError'
+      summary: Create a websocket connection
+swagger: "2.0"

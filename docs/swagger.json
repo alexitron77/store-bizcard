@@ -1,0 +1,225 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a sample server celler server.",
+        "title": "Swagger Example API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/create-card": {
+            "post": {
+                "description": "This endpoint save the input into the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Save card",
+                "operationId": "save-card-to-database",
+                "parameters": [
+                    {
+                        "description": "Create bizcard",
+                        "name": "card",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Bizcard"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.HTTPCreated"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.HTTPClientError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.HTTPBackendError"
+                        }
+                    }
+                }
+            }
+        },
+        "/upload-card": {
+            "post": {
+                "description": "This endpoint upload an image file into the file system of the server",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Upload file",
+                "operationId": "upload-file-to-server",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "Body with image file",
+                        "name": "myFile",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.HTTPSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.HTTPClientError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.HTTPBackendError"
+                        }
+                    }
+                }
+            }
+        },
+        "/ws": {
+            "get": {
+                "description": "This endpoint establish a websocket connection with the client",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Create a websocket connection",
+                "operationId": "connect-websocket",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.HTTPSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.HTTPClientError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.HTTPBackendError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Bizcard": {
+            "type": "object",
+            "properties": {
+                "company": {
+                    "type": "string",
+                    "example": "Thales"
+                },
+                "country": {
+                    "type": "string",
+                    "example": "Singapore"
+                },
+                "firstname": {
+                    "description": "gorm.Model",
+                    "type": "string",
+                    "example": "Alexis"
+                },
+                "lastname": {
+                    "type": "string",
+                    "example": "Tran"
+                },
+                "linked_in": {
+                    "type": "string",
+                    "example": "null"
+                },
+                "phone_number": {
+                    "type": "string",
+                    "example": "88924600"
+                },
+                "role": {
+                    "type": "string",
+                    "example": "Software engineer"
+                },
+                "website": {
+                    "type": "string",
+                    "example": "www.alexis.tran.com"
+                }
+            }
+        },
+        "models.HTTPBackendError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 500
+                },
+                "message": {
+                    "type": "string",
+                    "example": "internal server error"
+                }
+            }
+        },
+        "models.HTTPClientError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 400
+                },
+                "message": {
+                    "type": "string",
+                    "example": "status bad request"
+                }
+            }
+        },
+        "models.HTTPCreated": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 201
+                },
+                "message": {
+                    "type": "string",
+                    "example": "status created"
+                }
+            }
+        },
+        "models.HTTPSuccess": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "message": {
+                    "type": "string",
+                    "example": "status success"
+                }
+            }
+        }
+    }
+}

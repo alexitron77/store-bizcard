@@ -15,6 +15,16 @@ var upgrader = websocket.Upgrader{
 
 var ws *websocket.Conn
 
+// Websocket godoc
+// @Summary Create a websocket connection
+// @Description This endpoint establish a websocket connection with the client
+// @ID connect-websocket
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.HTTPSuccess
+// @Failure 400 {object} models.HTTPClientError
+// @Failure 500 {object} models.HTTPBackendError
+// @Router /ws [get]
 func (b *BizcardController) ConnWebSocket(c *gin.Context) {
 	// Allow all origins to avoid CORS issues
 	upgrader.CheckOrigin = func(r *http.Request) bool { return true }

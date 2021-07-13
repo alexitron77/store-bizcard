@@ -2,20 +2,31 @@ package controllers
 
 import (
 	"fmt"
-	"log"
 	"net/http"
+	"os"
 
-	"biz.card/utils"
 	"github.com/gin-gonic/gin"
 )
 
+// Upload godoc
+// @Summary Upload file
+// @Description This endpoint upload an image file into the file system of the server
+// @ID upload-file-to-server
+// @Accept json
+// @Produce json
+// @Param myFile formData file true "Body with image file"
+// @Success 200 {object} models.HTTPSuccess
+// @Failure 400 {object} models.HTTPClientError
+// @Failure 500 {object} models.HTTPBackendError
+// @Router /upload-card [post]
 func (b *BizcardController) Upload(c *gin.Context) {
-	ocr_channel := make(chan string)
+	// ocr_channel := make(chan string)
 
 	file, err := c.FormFile("myFile")
 
 	if err != nil {
-		log.Fatal(err)
+		b.log.Errorf(err.Error())
+		os.Exit(1)
 	}
 
 	err = c.SaveUploadedFile(file, "uploaded/"+file.Filename)
@@ -26,6 +37,6 @@ func (b *BizcardController) Upload(c *gin.Context) {
 
 	c.JSON(http.StatusOK, fmt.Sprintf("'%s' uploaded!", file.Filename))
 
-	go utils.Ocr(file, ocr_channel)
-	WriteToWs(<-ocr_channel)
+	// go utils.Ocr(file, ocr_channel)
+	// WriteToWs(<-ocr_channel)
 }

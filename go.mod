@@ -5,6 +5,10 @@ go 1.15
 
 require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
+	github.com/aws/aws-sdk-go v1.34.28
+	github.com/aws/aws-sdk-go-v2 v1.7.0 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.4.1 // indirect
+	github.com/aws/aws-sdk-go-v2/service/s3 v1.11.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/gin-gonic/gin v1.7.2
 	github.com/go-openapi/jsonreference v0.19.6 // indirect

@@ -17,12 +17,12 @@ type DBConn struct {
 	Password string
 }
 
-type BizCardModel struct {
+type DBModel struct {
 	DB  *gorm.DB
 	Ctx context.Context
 }
 
-func (c DBConn) ConnectDB() *BizCardModel {
+func (c DBConn) ConnectDB() *DBModel {
 	con_str := fmt.Sprintf("host=%s user=postgres password=%s dbname=%s port=5432 sslmode=disable TimeZone=Asia/Shanghai", c.Url, c.Password, "postgres")
 	db, err := gorm.Open(postgres.Open(con_str))
 
@@ -32,17 +32,17 @@ func (c DBConn) ConnectDB() *BizCardModel {
 		os.Exit(1)
 	}
 
-	return &BizCardModel{db, nil}
+	return &DBModel{db, nil}
 }
 
-func NewBizCardModel(db *gorm.DB, ctx context.Context) *BizCardModel {
-	return &BizCardModel{
+func NewBizCardModel(db *gorm.DB, ctx context.Context) *DBModel {
+	return &DBModel{
 		DB:  db,
 		Ctx: ctx,
 	}
 }
 
-func (c *BizCardModel) Save(card *models.Bizcard) error {
+func (c *DBModel) Save(card *models.Bizcard) error {
 	c.DB.Create(&card)
 	return nil
 }

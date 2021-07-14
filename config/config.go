@@ -1,38 +1,25 @@
 package config
 
 import (
-	"log"
+	"context"
 
-	"github.com/spf13/viper"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type config struct {
-	Postgres db `mapstructure:"POSTGRES"`
-	Mongo    db `mapstructure:"MONGO"`
+type Config struct {
+	DB  *mongo.Client
+	Ctx context.Context
+	Log *logrus.Logger
+	S3  *s3.S3
 }
 
-type db struct {
-	Url      string `mapstructure:"URL"`
-	Username string `mapstructure:"USERNAME"`
-	Password string `mapstructure:"PASSWORD"`
-}
-
-func LoadConfig(path string) *config {
-	viper.AddConfigPath(path)
-	viper.SetConfigName("dev")
-	viper.SetConfigType("yaml")
-
-	err := viper.ReadInConfig()
-
-	if err != nil {
-		log.Fatal("Error opening config file")
+func NewConfig(db *mongo.Client, ctx context.Context, log *logrus.Logger, s3 *s3.S3) *Config {
+	return &Config{
+		DB:  db,
+		Ctx: ctx,
+		Log: log,
+		S3:  s3,
 	}
-
-	conf := &config{}
-	err = viper.Unmarshal(&conf)
-
-	if err != nil {
-		log.Fatal("Error unmarshal config file")
-	}
-	return conf
 }

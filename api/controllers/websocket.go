@@ -34,7 +34,7 @@ func (b *BizcardController) ConnWebSocket(c *gin.Context) {
 	_, msg, err := ws.ReadMessage()
 
 	if err != nil {
-		b.log.Errorf(err.Error())
+		b.config.Log.Errorf(err.Error())
 	}
 
 	fmt.Print(string(msg))

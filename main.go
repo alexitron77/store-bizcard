@@ -8,6 +8,7 @@ import (
 	_ "biz.card/docs"
 
 	ctrl "biz.card/api/controllers"
+	"biz.card/api/repositories/aws"
 	"biz.card/api/repositories/mongo"
 	"biz.card/config"
 	mw "biz.card/middleware"
@@ -24,14 +25,16 @@ import (
 // @host localhost:8080
 // @basePath /
 func main() {
+	path, _ := filepath.Abs("config/env")
+	conf := config.LoadConfig(path)
+
 	r := gin.Default()
 	r.Use(mw.GinLogMiddleware())
 
+	s3 := aws.AwsInit(conf.Aws.AccessKey, conf.Aws.Secret)
+
 	logger := log.New()
 	logger.SetFormatter(&log.JSONFormatter{})
-
-	path, _ := filepath.Abs("config/env")
-	conf := config.LoadConfig(path)
 
 	db := &mongo.DBConn{
 		Url:      conf.Mongo.Url,
@@ -39,11 +42,14 @@ func main() {
 		Password: conf.Mongo.Password,
 	}
 
-	conn := db.ConnectDB()
-	defer conn.DB.Disconnect(conn.Ctx)
+	dbconn := db.ConnectDB()
+	defer dbconn.DB.Disconnect(dbconn.Ctx)
 
-	bizcardRepo := mongo.NewBizCardModel(conn.DB, conn.Ctx, logger)
-	card := ctrl.NewBizcardController(bizcardRepo, logger)
+	config := config.NewConfig(dbconn.DB, dbconn.Ctx, logger, s3)
+	bizCardRepo := mongo.NewDBRepo(config)
+	awsRepo := aws.NewAwsRepo()
+
+	card := ctrl.NewBizcardController(config, bizCardRepo, awsRepo)
 
 	r.POST("/create-card", card.SaveBizCard)
 	r.POST("/upload-card", card.Upload)

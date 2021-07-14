@@ -6,22 +6,25 @@ import (
 	"os"
 	"time"
 
+	"biz.card/config"
 	"biz.card/models"
-	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-type BizCardModel struct {
-	DB  *mongo.Client
-	Ctx context.Context
-	Log *logrus.Logger
+const (
+	conStrTemplate = "mongodb://%s:%s@localhost:27017"
+)
+
+type MongoRepo struct {
+	Conf *config.Config
 }
 
-const (
-	conStrTemplate = "mongodb://%s:%s@mongo:27017"
-)
+type DBModel struct {
+	DB  *mongo.Client
+	Ctx context.Context
+}
 
 type DBConn struct {
 	Url      string
@@ -29,7 +32,7 @@ type DBConn struct {
 	Password string
 }
 
-func (c DBConn) ConnectDB() *BizCardModel {
+func (c DBConn) ConnectDB() *DBModel {
 
 	connectionString := fmt.Sprintf(conStrTemplate, c.Username, c.Password)
 
@@ -47,20 +50,18 @@ func (c DBConn) ConnectDB() *BizCardModel {
 		fmt.Print(err)
 	}
 
-	return &BizCardModel{client, ctx, nil}
+	return &DBModel{client, ctx}
 }
 
-func NewBizCardModel(db *mongo.Client, ctx context.Context, log *logrus.Logger) *BizCardModel {
-	return &BizCardModel{
-		Log: log,
-		DB:  db,
-		Ctx: ctx,
+func NewDBRepo(config *config.Config) *MongoRepo {
+	return &MongoRepo{
+		Conf: config,
 	}
 }
 
-func (c *BizCardModel) Save(card *models.Bizcard) error {
-	collection := c.DB.Database("bizcard").Collection("cards")
-	_, err := collection.InsertOne(c.Ctx, card)
+func (c *MongoRepo) Save(card *models.Bizcard) error {
+	collection := c.Conf.DB.Database("bizcard").Collection("cards")
+	_, err := collection.InsertOne(c.Conf.Ctx, card)
 
 	if err != nil {
 		return err

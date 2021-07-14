@@ -4,6 +4,8 @@ This is the backend service to store cards into a NOSQL database
 
 # Quickstart
 
+Make sure to fill up the environment variables. A template is located under /config/env/template.yaml. Copy this template and set the environment values. Then rename it as "dev.yaml" so it can be read by the application.
+
 Run `docker-compose up --build` to start the application.
 
 The server is located on port :8080

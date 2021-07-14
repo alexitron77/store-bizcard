@@ -25,18 +25,19 @@ func (b *BizcardController) Upload(c *gin.Context) {
 	file, err := c.FormFile("myFile")
 
 	if err != nil {
-		b.log.Errorf(err.Error())
+		b.config.Log.Errorf(err.Error())
 		os.Exit(1)
 	}
 
 	err = c.SaveUploadedFile(file, "uploaded/"+file.Filename)
 
 	if err != nil {
-		b.log.Errorf(err.Error())
+		b.config.Log.Errorf(err.Error())
 	}
 
 	c.JSON(http.StatusOK, fmt.Sprintf("'%s' uploaded!", file.Filename))
 
 	// go utils.Ocr(file, ocr_channel)
 	// WriteToWs(<-ocr_channel)
+	b.awsRepo.UploadToS3(b.config.S3, file)
 }

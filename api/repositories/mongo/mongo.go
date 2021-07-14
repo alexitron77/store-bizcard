@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	conStrTemplate = "mongodb://%s:%s@localhost:27017"
+	conStrTemplate = "mongodb://%s:%s@%s:27017"
 )
 
 type MongoRepo struct {
@@ -34,7 +34,7 @@ type DBConn struct {
 
 func (c DBConn) ConnectDB() *DBModel {
 
-	connectionString := fmt.Sprintf(conStrTemplate, c.Username, c.Password)
+	connectionString := fmt.Sprintf(conStrTemplate, c.Username, c.Password, c.Url)
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(connectionString))
 

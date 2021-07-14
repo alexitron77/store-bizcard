@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   go-app:
-    build: 
+    build:
       context: .
       dockerfile: dockerfile
     container_name: go-app

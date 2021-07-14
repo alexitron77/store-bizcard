@@ -7,5 +7,5 @@ import (
 )
 
 type AwsRepo interface {
-	UploadToS3(s3Client *s3.S3, file *multipart.FileHeader)
+	UploadToS3(s3Client *s3.S3, file *multipart.FileHeader) error
 }

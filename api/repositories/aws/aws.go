@@ -34,9 +34,9 @@ func NewAwsRepo() *AwsRepo {
 	return &AwsRepo{}
 }
 
-func (awsService *AwsRepo) UploadToS3(s3Client *s3.S3, file *multipart.FileHeader) {
+func (awsService *AwsRepo) UploadToS3(s3Client *s3.S3, file *multipart.FileHeader) error {
 	bucket := aws.String("bizcards")
-	key := aws.String("test")
+	key := aws.String(file.Filename)
 
 	fileToUpload, _ := file.Open()
 
@@ -50,8 +50,9 @@ func (awsService *AwsRepo) UploadToS3(s3Client *s3.S3, file *multipart.FileHeade
 
 	if err != nil {
 		fmt.Printf("Failed to upload data to %s/%s, %s\n", *bucket, *key, err.Error())
-		return
+		return err
 	}
 
 	fmt.Printf("Successfully created bucket %s and uploaded data with key %s\n", *bucket, *key)
+	return nil
 }

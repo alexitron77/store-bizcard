@@ -20,7 +20,7 @@ type BizCardModel struct {
 }
 
 const (
-	conStrTemplate = "mongodb://%s:%s@localhost:27017"
+	conStrTemplate = "mongodb://%s:%s@mongo:27017"
 )
 
 type DBConn struct {

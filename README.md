@@ -4,7 +4,10 @@ This is the backend service to store cards into a NOSQL database
 
 # Quickstart
 
-Run the server `go run main.go`
+Run `docker-compose up --build` to start the application.
+
+The server is located on port :8080
+The mongo database is accessible on port :27017. The 2 services are connected on the same bridge using the service name to connect.
 
 The swagger documentation can be found under
 

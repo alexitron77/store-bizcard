@@ -1,0 +1,22 @@
+version: "3.7"
+services:
+  go-app:
+    build: 
+      context: .
+      dockerfile: dockerfile
+    container_name: go-app
+    depends_on:
+      - mongo
+    environment:
+      - PORT=8080
+    ports:
+      - "8080:8080"
+  mongo:
+    image: "mongo:latest"
+    container_name: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    ports:
+      - "27017:27017"
+    restart: always

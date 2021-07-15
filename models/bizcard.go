@@ -13,5 +13,6 @@ type Bizcard struct {
 }
 
 type BizcardRepo interface {
-	Save(*Bizcard) error
+	Create(*Bizcard) error
+	Read(string) ([]Bizcard, error)
 }

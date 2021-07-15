@@ -8,6 +8,7 @@ import (
 
 	"biz.card/config"
 	"biz.card/models"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -59,7 +60,7 @@ func NewDBRepo(config *config.Config) *MongoRepo {
 	}
 }
 
-func (c *MongoRepo) Save(card *models.Bizcard) error {
+func (c *MongoRepo) Create(card *models.Bizcard) error {
 	collection := c.Conf.DB.Database("bizcard").Collection("cards")
 	_, err := collection.InsertOne(c.Conf.Ctx, card)
 
@@ -68,4 +69,24 @@ func (c *MongoRepo) Save(card *models.Bizcard) error {
 	}
 
 	return nil
+}
+
+func (c *MongoRepo) Read(name string) ([]models.Bizcard, error) {
+	var result []models.Bizcard
+
+	collection := c.Conf.DB.Database("bizcard").Collection("cards")
+	cur, err := collection.Find(c.Conf.Ctx, bson.D{{"firstname", name}})
+
+	if err != nil {
+		fmt.Print(err)
+		return []models.Bizcard{}, err
+	}
+
+	for cur.Next(c.Conf.Ctx) {
+		var card models.Bizcard
+		cur.Decode(&card)
+		result = append(result, card)
+	}
+
+	return result, nil
 }

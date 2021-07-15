@@ -52,6 +52,7 @@ func main() {
 	card := ctrl.NewBizcardController(config, bizCardRepo, awsRepo)
 
 	r.POST("/create-card", card.SaveBizCard)
+	r.GET("/get-card/:name", card.ReadBizCard)
 	r.POST("/upload-card", card.Upload)
 	r.GET("/ws", card.ConnWebSocket)
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

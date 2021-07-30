@@ -2,6 +2,9 @@ basePath: /
 definitions:
   models.Bizcard:
     properties:
+      card:
+        example: arn://example.svg
+        type: string
       company:
         example: Thales
         type: string
@@ -75,7 +78,7 @@ paths:
   /create-card:
     post:
       consumes:
-      - application/json
+      - multipart/form-data
       description: This endpoint save the input into the database
       operationId: save-card-to-database
       parameters:

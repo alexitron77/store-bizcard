@@ -21,6 +21,6 @@ The swagger documentation can be found under
 
 To generate swagger documentation, make sure to have swaggo cli.
 
-`go get -u github.com/swaggo/swag/cmd/swag installed`.
+`go get -u github.com/swaggo/swag/cmd/swag`.
 
 Then run `swag init` to start generating the documentation. The generated files are located under /docs from the root directory.

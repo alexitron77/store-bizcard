@@ -5,12 +5,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	_ "biz.card/docs"
-
 	ctrl "biz.card/api/controllers"
 	"biz.card/api/repositories/aws"
 	"biz.card/api/repositories/mongo"
 	"biz.card/config"
+	_ "biz.card/docs"
 	mw "biz.card/middleware"
 	log "github.com/sirupsen/logrus"
 	swaggerFiles "github.com/swaggo/files"
@@ -51,9 +50,9 @@ func main() {
 
 	card := ctrl.NewBizcardController(config, bizCardRepo, awsRepo)
 
-	r.POST("/create-card", card.SaveBizCard)
+	// Handlers chain on create-card endpoint
+	r.POST("/create-card", card.SaveBizCard, card.Upload, card.UpdateCardURL)
 	r.GET("/get-card/:name", card.ReadBizCard)
-	r.POST("/upload-card", card.Upload)
 	r.GET("/ws", card.ConnWebSocket)
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

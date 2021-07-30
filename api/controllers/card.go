@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -13,7 +14,7 @@ import (
 // @Summary Save card
 // @Description This endpoint save the input into the database
 // @ID save-card-to-database
-// @Accept json
+// @Accept multipart/form-data
 // @Produce json
 // @Param card body models.Bizcard true "Create bizcard"
 // @Success 201 {object} models.HTTPCreated
@@ -21,14 +22,21 @@ import (
 // @Failure 500 {object} models.HTTPBackendError
 // @Router /create-card [post]
 func (b *BizcardController) SaveBizCard(c *gin.Context) {
+
 	var card models.Bizcard
-	if err := c.ShouldBindJSON(&card); err != nil {
+	cCard := c.PostForm("card")
+
+	err := json.Unmarshal([]byte(cCard), &card)
+
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"errors": err.Error()})
 		b.config.Log.Errorf(err.Error())
 		return
 	}
 
-	err := b.bizcardRepo.Create(&card)
+	id, err := b.bizcardRepo.Create(&card)
+
+	c.Set("cardId", id)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"errors": err.Error()})
@@ -36,9 +44,13 @@ func (b *BizcardController) SaveBizCard(c *gin.Context) {
 		return
 	}
 
+	c.Next()
+
 	c.JSON(http.StatusCreated, gin.H{"status": "Card successfully created"})
+
 }
 
+// Deprecated
 // Upload godoc
 // @Summary Upload file
 // @Description This endpoint upload an image file into the file system of the server
@@ -53,7 +65,7 @@ func (b *BizcardController) SaveBizCard(c *gin.Context) {
 func (b *BizcardController) Upload(c *gin.Context) {
 	// ocr_channel := make(chan string)
 
-	file, err := c.FormFile("myFile")
+	file, err := c.FormFile("file")
 
 	if err != nil {
 		b.config.Log.Errorf(err.Error())
@@ -67,9 +79,20 @@ func (b *BizcardController) Upload(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, fmt.Sprintf("Upload failed! Err:%s", err))
+		return
 	}
+	c.Next()
+}
 
-	c.JSON(http.StatusOK, fmt.Sprintf("'%s' uploaded!", file.Filename))
+func (b *BizcardController) UpdateCardURL(c *gin.Context) {
+	file, _ := c.FormFile("file")
+
+	amazonUrl := fmt.Sprintf("https://bizcards.s3.ap-southeast-1.amazonaws.com/%s", file.Filename)
+
+	fmt.Print("I'm in update function")
+	id := c.GetString("cardId")
+	val := amazonUrl
+	b.bizcardRepo.Update(id, val)
 }
 
 func (b *BizcardController) ReadBizCard(c *gin.Context) {

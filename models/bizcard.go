@@ -10,9 +10,11 @@ type Bizcard struct {
 	PhoneNumber string `gorm:"phone_number" json:"phone_number" example:"88924600"`
 	Website     string `gorm:"website" json:"website" example:"www.alexis.tran.com"`
 	LinkedIn    string `gorm:"url" json:"linked_in" example:"null"`
+	CardUrl     string `gorm:"card_url" json:"card" example:"arn://example.svg"`
 }
 
 type BizcardRepo interface {
-	Create(*Bizcard) error
+	Create(*Bizcard) (string, error)
 	Read(string) ([]Bizcard, error)
+	Update(string, string)
 }

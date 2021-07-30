@@ -9,6 +9,7 @@ import (
 	"biz.card/config"
 	"biz.card/models"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -60,15 +61,17 @@ func NewDBRepo(config *config.Config) *MongoRepo {
 	}
 }
 
-func (c *MongoRepo) Create(card *models.Bizcard) error {
+func (c *MongoRepo) Create(card *models.Bizcard) (string, error) {
 	collection := c.Conf.DB.Database("bizcard").Collection("cards")
-	_, err := collection.InsertOne(c.Conf.Ctx, card)
+	result, err := collection.InsertOne(c.Conf.Ctx, card)
+
+	id := result.InsertedID.(primitive.ObjectID)
 
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return id.Hex(), nil
 }
 
 func (c *MongoRepo) Read(name string) ([]models.Bizcard, error) {
@@ -89,4 +92,19 @@ func (c *MongoRepo) Read(name string) ([]models.Bizcard, error) {
 	}
 
 	return result, nil
+}
+
+func (c *MongoRepo) Update(id string, value string) {
+	collection := c.Conf.DB.Database("bizcard").Collection("cards")
+	objectId, _ := primitive.ObjectIDFromHex(id)
+	_, err := collection.UpdateOne(c.Conf.Ctx, bson.M{
+		"_id": objectId},
+		bson.D{
+			{"$set", bson.D{{"card_url", value}}},
+		},
+	)
+	if err != nil {
+		c.Conf.Log.Fatal("The update has failed")
+	}
+
 }

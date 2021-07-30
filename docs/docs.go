@@ -29,7 +29,7 @@ var doc = `{
             "post": {
                 "description": "This endpoint save the input into the database",
                 "consumes": [
-                    "application/json"
+                    "multipart/form-data"
                 ],
                 "produces": [
                     "application/json"
@@ -149,6 +149,10 @@ var doc = `{
         "models.Bizcard": {
             "type": "object",
             "properties": {
+                "card": {
+                    "type": "string",
+                    "example": "arn://example.svg"
+                },
                 "company": {
                     "type": "string",
                     "example": "Thales"

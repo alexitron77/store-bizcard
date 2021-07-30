@@ -74,11 +74,25 @@ func (c *MongoRepo) Create(card *models.Bizcard) (string, error) {
 	return id.Hex(), nil
 }
 
-func (c *MongoRepo) Read(name string) ([]models.Bizcard, error) {
+func (c *MongoRepo) Read(id string) (models.Bizcard, error) {
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		c.Conf.Log.Errorf(err.Error())
+	}
+	collection := c.Conf.DB.Database("bizcard").Collection("cards")
+	cur := collection.FindOne(c.Conf.Ctx, bson.M{"_id": objectID})
+
+	var card models.Bizcard
+	cur.Decode(&card)
+
+	return card, nil
+}
+
+func (c *MongoRepo) ReadAll() ([]models.Bizcard, error) {
 	var result []models.Bizcard
 
 	collection := c.Conf.DB.Database("bizcard").Collection("cards")
-	cur, err := collection.Find(c.Conf.Ctx, bson.D{{"firstname", name}})
+	cur, err := collection.Find(c.Conf.Ctx, bson.D{})
 
 	if err != nil {
 		fmt.Print(err)

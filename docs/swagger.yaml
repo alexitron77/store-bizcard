@@ -2,7 +2,7 @@ basePath: /
 definitions:
   models.Bizcard:
     properties:
-      card:
+      card_url:
         example: arn://example.svg
         type: string
       company:
@@ -12,7 +12,6 @@ definitions:
         example: Singapore
         type: string
       firstname:
-        description: gorm.Model
         example: Alexis
         type: string
       lastname:
@@ -104,6 +103,56 @@ paths:
           schema:
             $ref: '#/definitions/models.HTTPBackendError'
       summary: Save card
+  /get-all-cards:
+    get:
+      consumes:
+      - application/json
+      description: This endpoint retrieve all cards from the database
+      operationId: read-all-cards-from-db
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.HTTPSuccess'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.HTTPClientError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.HTTPBackendError'
+      summary: Read all cards from DB
+  /get-card/{id}:
+    get:
+      consumes:
+      - application/json
+      description: This endpoint retrieve a card from the database
+      operationId: read-card-from-db
+      parameters:
+      - description: Card ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.HTTPSuccess'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.HTTPClientError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.HTTPBackendError'
+      summary: Read card from DB
   /upload-card:
     post:
       consumes:

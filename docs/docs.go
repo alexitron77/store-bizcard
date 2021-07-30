@@ -69,6 +69,81 @@ var doc = `{
                 }
             }
         },
+        "/get-all-cards": {
+            "get": {
+                "description": "This endpoint retrieve all cards from the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Read all cards from DB",
+                "operationId": "read-all-cards-from-db",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.HTTPSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.HTTPClientError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.HTTPBackendError"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-card/{id}": {
+            "get": {
+                "description": "This endpoint retrieve a card from the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Read card from DB",
+                "operationId": "read-card-from-db",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Card ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.HTTPSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.HTTPClientError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.HTTPBackendError"
+                        }
+                    }
+                }
+            }
+        },
         "/upload-card": {
             "post": {
                 "description": "This endpoint upload an image file into the file system of the server",
@@ -149,7 +224,7 @@ var doc = `{
         "models.Bizcard": {
             "type": "object",
             "properties": {
-                "card": {
+                "card_url": {
                     "type": "string",
                     "example": "arn://example.svg"
                 },
@@ -162,7 +237,6 @@ var doc = `{
                     "example": "Singapore"
                 },
                 "firstname": {
-                    "description": "gorm.Model",
                     "type": "string",
                     "example": "Alexis"
                 },

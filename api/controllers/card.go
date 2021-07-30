@@ -95,13 +95,44 @@ func (b *BizcardController) UpdateCardURL(c *gin.Context) {
 	b.bizcardRepo.Update(id, val)
 }
 
+// @Summary Read card from DB
+// @Description This endpoint retrieve a card from the database
+// @ID read-card-from-db
+// @Accept  json
+// @Produce json
+// @Param id path int true "Card ID"
+// @Success 200 {object} models.HTTPSuccess
+// @Failure 400 {object} models.HTTPClientError
+// @Failure 500 {object} models.HTTPBackendError.
+// @Router /get-card/{id} [get]
 func (b *BizcardController) ReadBizCard(c *gin.Context) {
-	id := c.Param("name")
+	id := c.Param("id")
 
 	res, err := b.bizcardRepo.Read(id)
 
 	if err != nil {
 		b.config.Log.Errorf(err.Error())
+		c.JSON(http.StatusInternalServerError, "Something went wrong")
+	}
+
+	c.JSON(http.StatusOK, res)
+}
+
+// @Summary Read all cards from DB
+// @Description This endpoint retrieve all cards from the database
+// @ID read-all-cards-from-db
+// @Accept  json
+// @Produce json
+// @Success 200 {object} models.HTTPSuccess
+// @Failure 400 {object} models.HTTPClientError
+// @Failure 500 {object} models.HTTPBackendError.
+// @Router /get-all-cards [get]
+func (b *BizcardController) ReadAllBizCard(c *gin.Context) {
+	res, err := b.bizcardRepo.ReadAll()
+
+	if err != nil {
+		b.config.Log.Errorf(err.Error())
+		c.JSON(http.StatusInternalServerError, "Something went wrong")
 	}
 
 	c.JSON(http.StatusOK, res)

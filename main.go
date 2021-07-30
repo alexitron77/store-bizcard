@@ -52,7 +52,8 @@ func main() {
 
 	// Handlers chain on create-card endpoint
 	r.POST("/create-card", card.SaveBizCard, card.Upload, card.UpdateCardURL)
-	r.GET("/get-card/:name", card.ReadBizCard)
+	r.GET("/get-card/:id", card.ReadBizCard)
+	r.GET("/get-all-cards", card.ReadAllBizCard)
 	r.GET("/ws", card.ConnWebSocket)
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

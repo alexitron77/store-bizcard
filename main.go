@@ -7,11 +7,11 @@ import (
 
 	"biz.card/api"
 	ctrl "biz.card/api/controllers"
+	mw "biz.card/api/middleware"
 	"biz.card/api/repositories/aws"
 	"biz.card/api/repositories/mongo"
 	"biz.card/config"
 	_ "biz.card/docs"
-	mw "biz.card/middleware"
 	log "github.com/sirupsen/logrus"
 )
 

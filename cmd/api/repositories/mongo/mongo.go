@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
+	"biz.card/cmd/api/models"
 	"biz.card/config"
-	"biz.card/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

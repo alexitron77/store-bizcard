@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	ctrl "biz.card/api/controllers"
+	ctrl "biz.card/cmd/api/controllers"
 	"github.com/gin-gonic/gin"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"

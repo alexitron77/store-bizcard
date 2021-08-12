@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"biz.card/models"
+	"biz.card/cmd/api/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

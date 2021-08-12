@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"biz.card/models"
+	"biz.card/cmd/api/models"
 	"github.com/gin-gonic/gin"
 )
 

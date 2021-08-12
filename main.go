@@ -11,11 +11,11 @@ import (
 
 	"crypto/tls"
 
-	"biz.card/api"
-	ctrl "biz.card/api/controllers"
-	mw "biz.card/api/middleware"
-	"biz.card/api/repositories/aws"
-	"biz.card/api/repositories/mongo"
+	"biz.card/cmd/api"
+	ctrl "biz.card/cmd/api/controllers"
+	mw "biz.card/cmd/api/middleware"
+	"biz.card/cmd/api/repositories/aws"
+	"biz.card/cmd/api/repositories/mongo"
 	"biz.card/config"
 	_ "biz.card/docs"
 	log "github.com/sirupsen/logrus"

@@ -1,8 +1,8 @@
 package controllers
 
 import (
+	"biz.card/cmd/api/models"
 	"biz.card/config"
-	"biz.card/models"
 )
 
 type BizcardController struct {

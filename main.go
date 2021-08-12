@@ -1,9 +1,15 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"path/filepath"
 
 	"github.com/gin-gonic/gin"
+
+	"net/http"
+
+	"crypto/tls"
 
 	"biz.card/api"
 	ctrl "biz.card/api/controllers"
@@ -15,18 +21,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// @title Swagger Example API
-// @version 1.0
-// @description This is a sample server celler server.
-// @termsOfService http://swagger.io/terms/
-
-// @host localhost:8080
-// @basePath /
 func main() {
+	addr := flag.String("addr", ":8080", "Server address")
+	flag.Parse()
 	path, _ := filepath.Abs("config/env")
 	conf := config.LoadConfig(path)
 
 	r := gin.Default()
+
 	r.Use(mw.GinLogMiddleware())
 
 	s3 := aws.AwsInit(conf.Aws.AccessKey, conf.Aws.Secret)
@@ -49,7 +51,17 @@ func main() {
 
 	card := ctrl.NewBizcardController(config, bizCardRepo, awsRepo)
 
-	// Handlers chain on create-card endpoint
 	api.Handlers(r, card)
 
+	server := http.Server{
+		Addr:      *addr,
+		Handler:   r,
+		TLSConfig: &tls.Config{},
+	}
+
+	err := server.ListenAndServeTLS("./certificate/cert.pem", "./certificate/key.pem")
+
+	if err != nil {
+		fmt.Print(err)
+	}
 }

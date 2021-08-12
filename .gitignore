@@ -1,2 +1,3 @@
 /uploaded/*
 /config/env/dev.yaml
+certificate/**

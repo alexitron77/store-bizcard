@@ -7,9 +7,10 @@ import (
 )
 
 type Env struct {
-	Postgres db  `mapstructure:"POSTGRES"`
-	Mongo    db  `mapstructure:"MONGO"`
-	Aws      aws `mapstructure:"AWS"`
+	Postgres db    `mapstructure:"POSTGRES"`
+	Mongo    db    `mapstructure:"MONGO"`
+	Aws      aws   `mapstructure:"AWS"`
+	Kafka    kafka `mapstructure:"KAFKA"`
 }
 
 type aws struct {
@@ -21,6 +22,11 @@ type db struct {
 	Url      string `mapstructure:"URL"`
 	Username string `mapstructure:"USERNAME"`
 	Password string `mapstructure:"PASSWORD"`
+}
+
+type kafka struct {
+	Url   string `mapstructure:"URL"`
+	Topic string `mapstructure:"TOPIC"`
 }
 
 func LoadConfig(path string) *Env {

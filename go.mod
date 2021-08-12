@@ -16,15 +16,19 @@ require (
 	github.com/go-openapi/spec v0.20.3 // indirect
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/go-playground/validator/v10 v10.6.1 // indirect
+	github.com/golang/snappy v0.0.4 // indirect
 	github.com/gorilla/websocket v0.0.0-20170926233335-4201258b820c
 	github.com/jackc/pgproto3/v2 v2.1.0 // indirect
 	github.com/jinzhu/gorm v1.9.16
 	github.com/justinas/alice v1.2.0 // indirect
+	github.com/klauspost/compress v1.13.4 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-isatty v0.0.13 // indirect
+	github.com/pierrec/lz4 v2.6.1+incompatible // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/satori/go.uuid v1.2.0
+	github.com/segmentio/kafka-go v0.4.17
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/viper v1.8.1
 	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14

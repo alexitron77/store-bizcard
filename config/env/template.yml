@@ -10,3 +10,6 @@ AWS:
   SECRET:
   LOCATION:
   BUCKET:
+KAFKA:
+  URL: 
+  TOPIC:

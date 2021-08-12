@@ -16,6 +16,7 @@ import (
 	mw "biz.card/cmd/api/middleware"
 	"biz.card/cmd/api/repositories/aws"
 	"biz.card/cmd/api/repositories/mongo"
+	"biz.card/cmd/kafka"
 	"biz.card/config"
 	_ "biz.card/docs"
 	log "github.com/sirupsen/logrus"
@@ -59,9 +60,13 @@ func main() {
 		TLSConfig: &tls.Config{},
 	}
 
+	kafka.Producer([]string{conf.Kafka.Url}, conf.Kafka.Topic)
+	kafka.Consumer([]string{conf.Kafka.Url}, conf.Kafka.Topic)
+
 	err := server.ListenAndServeTLS("./certificate/cert.pem", "./certificate/key.pem")
 
 	if err != nil {
 		fmt.Print(err)
 	}
+
 }

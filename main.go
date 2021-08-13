@@ -11,7 +11,6 @@ import (
 	mw "biz.card/cmd/api/middleware"
 	"biz.card/cmd/api/repositories/aws"
 	"biz.card/cmd/api/repositories/mongo"
-	"biz.card/cmd/kafka"
 	"biz.card/config"
 	cg "biz.card/config"
 	_ "biz.card/docs"
@@ -42,18 +41,15 @@ func main() {
 	dbconn := db.ConnectDB()
 	defer dbconn.DB.Disconnect(dbconn.Ctx)
 
-	log := cg.NewLogger(logger)
+	config := cg.NewConfig(conf, logger)
 	storage := cg.NewStorage(dbconn.DB, s3)
-	bizCardRepo := mongo.NewDBRepo(log, storage)
+	bizCardRepo := mongo.NewDBRepo(config, storage)
 	awsRepo := aws.NewAwsRepo()
 
-	card := ctrl.NewBizcardController(log, storage, bizCardRepo, awsRepo)
+	card := ctrl.NewBizcardController(config, storage, bizCardRepo, awsRepo)
 
 	a := api.NewApi(addr, r)
 	a.Routes(card)
 	a.Start()
-
-	kafka.Producer([]string{conf.Kafka.Url}, conf.Kafka.Topic)
-	kafka.Consumer([]string{conf.Kafka.Url}, conf.Kafka.Topic)
 
 }

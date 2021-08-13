@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"biz.card/cmd/api/models"
+	"biz.card/cmd/kafka"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,7 +28,6 @@ func (b *BizcardController) SaveBizCard(c *gin.Context) {
 	cCard := c.PostForm("card")
 
 	err := json.Unmarshal([]byte(cCard), &card)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"errors": err.Error()})
 		b.config.Log.Errorf(err.Error())
@@ -48,6 +48,8 @@ func (b *BizcardController) SaveBizCard(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{"status": "Card successfully created"})
 
+	kafka.Producer([]string{b.config.Config.Kafka.Url}, b.config.Config.Kafka.Topic, fmt.Sprintf("{'status': 'success', 'cardId': %#v", id))
+	kafka.Consumer([]string{b.config.Config.Kafka.Url}, b.config.Config.Kafka.Topic)
 }
 
 // Deprecated
@@ -89,7 +91,6 @@ func (b *BizcardController) UpdateCardURL(c *gin.Context) {
 
 	amazonUrl := fmt.Sprintf("https://bizcards.s3.ap-southeast-1.amazonaws.com/%s", file.Filename)
 
-	fmt.Print("I'm in update function")
 	id := c.GetString("cardId")
 	val := amazonUrl
 	b.bizcardRepo.Update(c.Request.Context(), id, val)

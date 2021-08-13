@@ -21,7 +21,7 @@ const (
 
 type MongoRepo struct {
 	Storage *config.Storage
-	Logger  *config.Logger
+	Config  *config.Config
 }
 
 type DBModel struct {
@@ -56,10 +56,10 @@ func (c DBConn) ConnectDB() *DBModel {
 	return &DBModel{client, ctx}
 }
 
-func NewDBRepo(log *config.Logger, storage *config.Storage) *MongoRepo {
+func NewDBRepo(config *config.Config, storage *config.Storage) *MongoRepo {
 	return &MongoRepo{
 		Storage: storage,
-		Logger:  log,
+		Config:  config,
 	}
 }
 
@@ -79,7 +79,7 @@ func (c *MongoRepo) Create(ctx context.Context, card *models.Bizcard) (string, e
 func (c *MongoRepo) Read(ctx context.Context, id string) (models.Bizcard, error) {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		c.Logger.Log.Errorf(err.Error())
+		c.Config.Log.Errorf(err.Error())
 	}
 	collection := c.Storage.DB.Database("bizcard").Collection("cards")
 	cur := collection.FindOne(ctx, bson.M{"_id": objectID})
@@ -120,7 +120,7 @@ func (c *MongoRepo) Update(ctx context.Context, id string, value string) {
 		},
 	)
 	if err != nil {
-		c.Logger.Log.Fatal("The update has failed")
+		c.Config.Log.Fatal("The update has failed")
 	}
 
 }

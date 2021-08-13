@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"net/http"
+	"path/filepath"
 
 	ctrl "biz.card/cmd/api/controllers"
 	"github.com/gin-gonic/gin"
@@ -39,7 +40,20 @@ func (a *api) Start() {
 		TLSConfig: &tls.Config{},
 	}
 
-	err := server.ListenAndServeTLS("./certificate/cert.pem", "./certificate/key.pem")
+	cert, err := filepath.Abs("cmd/api/certificate/cert.pem")
+
+	if err != nil {
+
+		fmt.Print(err)
+	}
+
+	key, err := filepath.Abs("cmd/api/certificate/key.pem")
+
+	if err != nil {
+		fmt.Print(err)
+	}
+
+	err = server.ListenAndServeTLS(cert, key)
 
 	if err != nil {
 		fmt.Print(err)

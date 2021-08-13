@@ -6,8 +6,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type Logger struct {
-	Log *logrus.Logger
+type Config struct {
+	Config *Env
+	Log    *logrus.Logger
 }
 
 type Storage struct {
@@ -15,9 +16,10 @@ type Storage struct {
 	S3 *s3.S3
 }
 
-func NewLogger(log *logrus.Logger) *Logger {
-	return &Logger{
-		Log: log,
+func NewConfig(config *Env, log *logrus.Logger) *Config {
+	return &Config{
+		Config: config,
+		Log:    log,
 	}
 }
 

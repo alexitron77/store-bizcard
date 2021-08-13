@@ -7,7 +7,7 @@ import (
 	"github.com/segmentio/kafka-go"
 )
 
-func Producer(broker []string, topic string) {
+func Producer(broker []string, topic string, body string) {
 	k := kafka.NewWriter(kafka.WriterConfig{
 		Brokers: broker,
 		Topic:   topic,
@@ -15,7 +15,7 @@ func Producer(broker []string, topic string) {
 
 	msg := kafka.Message{
 		Key:   []byte("1"),
-		Value: []byte("Hello Alexis"),
+		Value: []byte(body),
 	}
 
 	err := k.WriteMessages(context.Background(), msg)
@@ -25,19 +25,19 @@ func Producer(broker []string, topic string) {
 	}
 }
 
-func Consumer(broker []string, topic string) {
+func Consumer(broker []string, topic string) string {
 	k := kafka.NewReader(kafka.ReaderConfig{
-		Brokers: broker,
-		Topic:   topic,
+		Brokers:     broker,
+		Topic:       topic,
+		GroupID:     "1",
+		StartOffset: kafka.LastOffset,
 	})
 
 	for {
 		msg, err := k.ReadMessage(context.Background())
-
 		if err != nil {
 			panic("could not read message " + err.Error())
 		}
-		// after receiving the message, log its value
-		fmt.Println("received: ", string(msg.Value))
+		fmt.Print(string(msg.Value))
 	}
 }

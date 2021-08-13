@@ -13,6 +13,7 @@ import (
 	"biz.card/cmd/api/repositories/mongo"
 	"biz.card/cmd/kafka"
 	"biz.card/config"
+	cg "biz.card/config"
 	_ "biz.card/docs"
 	log "github.com/sirupsen/logrus"
 )
@@ -41,11 +42,12 @@ func main() {
 	dbconn := db.ConnectDB()
 	defer dbconn.DB.Disconnect(dbconn.Ctx)
 
-	config := config.NewConfig(dbconn.DB, logger, s3)
-	bizCardRepo := mongo.NewDBRepo(config)
+	log := cg.NewLogger(logger)
+	storage := cg.NewStorage(dbconn.DB, s3)
+	bizCardRepo := mongo.NewDBRepo(log, storage)
 	awsRepo := aws.NewAwsRepo()
 
-	card := ctrl.NewBizcardController(config, bizCardRepo, awsRepo)
+	card := ctrl.NewBizcardController(log, storage, bizCardRepo, awsRepo)
 
 	a := api.NewApi(addr, r)
 	a.Routes(card)

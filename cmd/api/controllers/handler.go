@@ -6,14 +6,16 @@ import (
 )
 
 type BizcardController struct {
-	config      *config.Config
+	config      *config.Logger
+	storage     *config.Storage
 	bizcardRepo models.BizcardRepo
 	awsRepo     models.AwsRepo
 }
 
-func NewBizcardController(config *config.Config, bizcardRepo models.BizcardRepo, awsRepo models.AwsRepo) *BizcardController {
+func NewBizcardController(log *config.Logger, storage *config.Storage, bizcardRepo models.BizcardRepo, awsRepo models.AwsRepo) *BizcardController {
 	return &BizcardController{
-		config,
+		log,
+		storage,
 		bizcardRepo,
 		awsRepo,
 	}

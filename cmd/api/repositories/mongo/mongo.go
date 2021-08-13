@@ -20,7 +20,8 @@ const (
 )
 
 type MongoRepo struct {
-	Conf *config.Config
+	Storage *config.Storage
+	Logger  *config.Logger
 }
 
 type DBModel struct {
@@ -55,14 +56,15 @@ func (c DBConn) ConnectDB() *DBModel {
 	return &DBModel{client, ctx}
 }
 
-func NewDBRepo(config *config.Config) *MongoRepo {
+func NewDBRepo(log *config.Logger, storage *config.Storage) *MongoRepo {
 	return &MongoRepo{
-		Conf: config,
+		Storage: storage,
+		Logger:  log,
 	}
 }
 
 func (c *MongoRepo) Create(ctx context.Context, card *models.Bizcard) (string, error) {
-	collection := c.Conf.DB.Database("bizcard").Collection("cards")
+	collection := c.Storage.DB.Database("bizcard").Collection("cards")
 	result, err := collection.InsertOne(ctx, card)
 
 	id := result.InsertedID.(primitive.ObjectID)
@@ -77,9 +79,9 @@ func (c *MongoRepo) Create(ctx context.Context, card *models.Bizcard) (string, e
 func (c *MongoRepo) Read(ctx context.Context, id string) (models.Bizcard, error) {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		c.Conf.Log.Errorf(err.Error())
+		c.Logger.Log.Errorf(err.Error())
 	}
-	collection := c.Conf.DB.Database("bizcard").Collection("cards")
+	collection := c.Storage.DB.Database("bizcard").Collection("cards")
 	cur := collection.FindOne(ctx, bson.M{"_id": objectID})
 
 	var card models.Bizcard
@@ -91,7 +93,7 @@ func (c *MongoRepo) Read(ctx context.Context, id string) (models.Bizcard, error)
 func (c *MongoRepo) ReadAll(ctx context.Context) ([]models.Bizcard, error) {
 	var result []models.Bizcard
 
-	collection := c.Conf.DB.Database("bizcard").Collection("cards")
+	collection := c.Storage.DB.Database("bizcard").Collection("cards")
 	cur, err := collection.Find(ctx, bson.D{})
 
 	if err != nil {
@@ -109,7 +111,7 @@ func (c *MongoRepo) ReadAll(ctx context.Context) ([]models.Bizcard, error) {
 }
 
 func (c *MongoRepo) Update(ctx context.Context, id string, value string) {
-	collection := c.Conf.DB.Database("bizcard").Collection("cards")
+	collection := c.Storage.DB.Database("bizcard").Collection("cards")
 	objectId, _ := primitive.ObjectIDFromHex(id)
 	_, err := collection.UpdateOne(ctx, bson.M{
 		"_id": objectId},
@@ -118,7 +120,7 @@ func (c *MongoRepo) Update(ctx context.Context, id string, value string) {
 		},
 	)
 	if err != nil {
-		c.Conf.Log.Fatal("The update has failed")
+		c.Logger.Log.Fatal("The update has failed")
 	}
 
 }

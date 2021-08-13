@@ -75,7 +75,7 @@ func (b *BizcardController) Upload(c *gin.Context) {
 	// go utils.Ocr(file, ocr_channel)
 	// WriteToWs(<-ocr_channel)
 
-	err = b.awsRepo.UploadToS3(b.config.S3, file)
+	err = b.awsRepo.UploadToS3(b.storage.S3, file)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, fmt.Sprintf("Upload failed! Err:%s", err))

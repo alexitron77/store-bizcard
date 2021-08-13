@@ -1,6 +1,8 @@
 package api
 
 import (
+	"crypto/tls"
+	"fmt"
 	"net/http"
 
 	ctrl "biz.card/cmd/api/controllers"
@@ -9,11 +11,37 @@ import (
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
-func Handlers(r *gin.Engine, card *ctrl.BizcardController) http.Handler {
-	r.POST("/create-card", card.SaveBizCard, card.Upload, card.UpdateCardURL)
-	r.GET("/get-card/:id", card.ReadBizCard)
-	r.GET("/get-all-cards", card.ReadAllBizCard)
-	r.GET("/ws", card.ConnWebSocket)
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	return r
+type api struct {
+	addr *string
+	r    *gin.Engine
+}
+
+func NewApi(addr *string, r *gin.Engine) *api {
+	return &api{
+		addr,
+		r,
+	}
+}
+
+func (a *api) Routes(card *ctrl.BizcardController) http.Handler {
+	a.r.POST("/create-card", card.SaveBizCard, card.Upload, card.UpdateCardURL)
+	a.r.GET("/get-card/:id", card.ReadBizCard)
+	a.r.GET("/get-all-cards", card.ReadAllBizCard)
+	a.r.GET("/ws", card.ConnWebSocket)
+	a.r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	return a.r
+}
+
+func (a *api) Start() {
+	server := http.Server{
+		Addr:      *a.addr,
+		Handler:   a.r,
+		TLSConfig: &tls.Config{},
+	}
+
+	err := server.ListenAndServeTLS("./certificate/cert.pem", "./certificate/key.pem")
+
+	if err != nil {
+		fmt.Print(err)
+	}
 }

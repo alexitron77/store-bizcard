@@ -2,14 +2,9 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"path/filepath"
 
 	"github.com/gin-gonic/gin"
-
-	"net/http"
-
-	"crypto/tls"
 
 	"biz.card/cmd/api"
 	ctrl "biz.card/cmd/api/controllers"
@@ -46,27 +41,17 @@ func main() {
 	dbconn := db.ConnectDB()
 	defer dbconn.DB.Disconnect(dbconn.Ctx)
 
-	config := config.NewConfig(dbconn.DB, dbconn.Ctx, logger, s3)
+	config := config.NewConfig(dbconn.DB, logger, s3)
 	bizCardRepo := mongo.NewDBRepo(config)
 	awsRepo := aws.NewAwsRepo()
 
 	card := ctrl.NewBizcardController(config, bizCardRepo, awsRepo)
 
-	api.Handlers(r, card)
-
-	server := http.Server{
-		Addr:      *addr,
-		Handler:   r,
-		TLSConfig: &tls.Config{},
-	}
+	a := api.NewApi(addr, r)
+	a.Routes(card)
+	a.Start()
 
 	kafka.Producer([]string{conf.Kafka.Url}, conf.Kafka.Topic)
 	kafka.Consumer([]string{conf.Kafka.Url}, conf.Kafka.Topic)
-
-	err := server.ListenAndServeTLS("./certificate/cert.pem", "./certificate/key.pem")
-
-	if err != nil {
-		fmt.Print(err)
-	}
 
 }

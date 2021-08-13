@@ -61,9 +61,9 @@ func NewDBRepo(config *config.Config) *MongoRepo {
 	}
 }
 
-func (c *MongoRepo) Create(card *models.Bizcard) (string, error) {
+func (c *MongoRepo) Create(ctx context.Context, card *models.Bizcard) (string, error) {
 	collection := c.Conf.DB.Database("bizcard").Collection("cards")
-	result, err := collection.InsertOne(c.Conf.Ctx, card)
+	result, err := collection.InsertOne(ctx, card)
 
 	id := result.InsertedID.(primitive.ObjectID)
 
@@ -74,13 +74,13 @@ func (c *MongoRepo) Create(card *models.Bizcard) (string, error) {
 	return id.Hex(), nil
 }
 
-func (c *MongoRepo) Read(id string) (models.Bizcard, error) {
+func (c *MongoRepo) Read(ctx context.Context, id string) (models.Bizcard, error) {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		c.Conf.Log.Errorf(err.Error())
 	}
 	collection := c.Conf.DB.Database("bizcard").Collection("cards")
-	cur := collection.FindOne(c.Conf.Ctx, bson.M{"_id": objectID})
+	cur := collection.FindOne(ctx, bson.M{"_id": objectID})
 
 	var card models.Bizcard
 	cur.Decode(&card)
@@ -88,18 +88,18 @@ func (c *MongoRepo) Read(id string) (models.Bizcard, error) {
 	return card, nil
 }
 
-func (c *MongoRepo) ReadAll() ([]models.Bizcard, error) {
+func (c *MongoRepo) ReadAll(ctx context.Context) ([]models.Bizcard, error) {
 	var result []models.Bizcard
 
 	collection := c.Conf.DB.Database("bizcard").Collection("cards")
-	cur, err := collection.Find(c.Conf.Ctx, bson.D{})
+	cur, err := collection.Find(ctx, bson.D{})
 
 	if err != nil {
 		fmt.Print(err)
 		return []models.Bizcard{}, err
 	}
 
-	for cur.Next(c.Conf.Ctx) {
+	for cur.Next(ctx) {
 		var card models.Bizcard
 		cur.Decode(&card)
 		result = append(result, card)
@@ -108,10 +108,10 @@ func (c *MongoRepo) ReadAll() ([]models.Bizcard, error) {
 	return result, nil
 }
 
-func (c *MongoRepo) Update(id string, value string) {
+func (c *MongoRepo) Update(ctx context.Context, id string, value string) {
 	collection := c.Conf.DB.Database("bizcard").Collection("cards")
 	objectId, _ := primitive.ObjectIDFromHex(id)
-	_, err := collection.UpdateOne(c.Conf.Ctx, bson.M{
+	_, err := collection.UpdateOne(ctx, bson.M{
 		"_id": objectId},
 		bson.D{
 			{"$set", bson.D{{"card_url", value}}},

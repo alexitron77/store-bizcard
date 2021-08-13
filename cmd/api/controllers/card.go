@@ -34,7 +34,7 @@ func (b *BizcardController) SaveBizCard(c *gin.Context) {
 		return
 	}
 
-	id, err := b.bizcardRepo.Create(&card)
+	id, err := b.bizcardRepo.Create(c.Request.Context(), &card)
 
 	c.Set("cardId", id)
 
@@ -92,7 +92,7 @@ func (b *BizcardController) UpdateCardURL(c *gin.Context) {
 	fmt.Print("I'm in update function")
 	id := c.GetString("cardId")
 	val := amazonUrl
-	b.bizcardRepo.Update(id, val)
+	b.bizcardRepo.Update(c.Request.Context(), id, val)
 }
 
 // @Summary Read card from DB
@@ -108,7 +108,7 @@ func (b *BizcardController) UpdateCardURL(c *gin.Context) {
 func (b *BizcardController) ReadBizCard(c *gin.Context) {
 	id := c.Param("id")
 
-	res, err := b.bizcardRepo.Read(id)
+	res, err := b.bizcardRepo.Read(c.Request.Context(), id)
 
 	if err != nil {
 		b.config.Log.Errorf(err.Error())
@@ -128,7 +128,7 @@ func (b *BizcardController) ReadBizCard(c *gin.Context) {
 // @Failure 500 {object} models.HTTPBackendError.
 // @Router /get-all-cards [get]
 func (b *BizcardController) ReadAllBizCard(c *gin.Context) {
-	res, err := b.bizcardRepo.ReadAll()
+	res, err := b.bizcardRepo.ReadAll(c.Request.Context())
 
 	if err != nil {
 		b.config.Log.Errorf(err.Error())

@@ -1,5 +1,7 @@
 package models
 
+import "context"
+
 type Bizcard struct {
 	FirstName   string `gorm:"firstname" json:"firstname" example:"Alexis"`
 	LastName    string `gorm:"lastname" json:"lastname" example:"Tran"`
@@ -13,8 +15,8 @@ type Bizcard struct {
 }
 
 type BizcardRepo interface {
-	Create(*Bizcard) (string, error)
-	Read(string) (Bizcard, error)
-	ReadAll() ([]Bizcard, error)
-	Update(string, string)
+	Create(context.Context, *Bizcard) (string, error)
+	Read(context.Context, string) (Bizcard, error)
+	ReadAll(context.Context) ([]Bizcard, error)
+	Update(context.Context, string, string)
 }

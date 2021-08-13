@@ -17,7 +17,7 @@ require (
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/go-playground/validator/v10 v10.6.1 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
-	github.com/gorilla/websocket v0.0.0-20170926233335-4201258b820c
+	github.com/gorilla/websocket v1.4.2
 	github.com/jackc/pgproto3/v2 v2.1.0 // indirect
 	github.com/jinzhu/gorm v1.9.16
 	github.com/justinas/alice v1.2.0 // indirect

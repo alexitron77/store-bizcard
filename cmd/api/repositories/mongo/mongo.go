@@ -67,11 +67,11 @@ func (c *MongoRepo) Create(ctx context.Context, card *models.Bizcard) (string, e
 	collection := c.Storage.DB.Database("bizcard").Collection("cards")
 	result, err := collection.InsertOne(ctx, card)
 
-	id := result.InsertedID.(primitive.ObjectID)
-
 	if err != nil {
 		return "", err
 	}
+
+	id := result.InsertedID.(primitive.ObjectID)
 
 	return id.Hex(), nil
 }
@@ -122,5 +122,4 @@ func (c *MongoRepo) Update(ctx context.Context, id string, value string) {
 	if err != nil {
 		c.Config.Log.Fatal("The update has failed")
 	}
-
 }

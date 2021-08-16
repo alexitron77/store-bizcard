@@ -1,10 +1,12 @@
 package controllers
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"biz.card/cmd/api/models"
 	"biz.card/cmd/kafka"
@@ -34,7 +36,15 @@ func (b *BizcardController) SaveBizCard(c *gin.Context) {
 		return
 	}
 
-	id, err := b.bizcardRepo.Create(c.Request.Context(), &card)
+	ctx, _ := context.WithTimeout(context.Background(), 1000*time.Millisecond)
+
+	id, err := b.bizcardRepo.Create(ctx, &card)
+
+	if err != nil {
+		fmt.Println("Request failed:", err)
+		c.Abort()
+		return
+	}
 
 	c.Set("cardId", id)
 
@@ -49,10 +59,9 @@ func (b *BizcardController) SaveBizCard(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"status": "Card successfully created"})
 
 	kafka.Producer([]string{b.config.Config.Kafka.Url}, b.config.Config.Kafka.Topic, fmt.Sprintf("{'status': 'success', 'cardId': %#v", id))
-	kafka.Consumer([]string{b.config.Config.Kafka.Url}, b.config.Config.Kafka.Topic)
+	go kafka.Consumer([]string{b.config.Config.Kafka.Url}, b.config.Config.Kafka.Topic)
 }
 
-// Deprecated
 // Upload godoc
 // @Summary Upload file
 // @Description This endpoint upload an image file into the file system of the server
@@ -93,7 +102,9 @@ func (b *BizcardController) UpdateCardURL(c *gin.Context) {
 
 	id := c.GetString("cardId")
 	val := amazonUrl
-	b.bizcardRepo.Update(c.Request.Context(), id, val)
+	ctx, _ := context.WithTimeout(c.Request.Context(), 2000*time.Millisecond)
+
+	b.bizcardRepo.Update(ctx, id, val)
 }
 
 // @Summary Read card from DB
